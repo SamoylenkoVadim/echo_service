@@ -1,0 +1,23 @@
+version: '3.9'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/Dockerfile
+      target: prod
+    image: echo_service:${ECHO_SERVICE_VERSION:-latest}
+    restart: always
+    env_file:
+    - .env
+    environment:
+      ECHO_SERVICE_HOST: 0.0.0.0
+      ECHO_SERVICE_DB_FILE: /db_data/db.sqlite3
+    volumes:
+    - echo_service-db-data:/db_data/
+
+
+
+volumes:
+  echo_service-db-data:
+    name: echo_service-db-data
