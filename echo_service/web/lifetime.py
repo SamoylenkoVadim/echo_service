@@ -1,8 +1,10 @@
 from typing import Awaitable, Callable
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from echo_service.constants import MEDIA_TYPE
 from echo_service.db.meta import meta
 from echo_service.db.models import load_all_models
 from echo_service.settings import settings
@@ -56,6 +58,38 @@ def register_startup_event(
         pass  # noqa: WPS420
 
     return _startup
+
+
+def register_exception_handler(
+    app: FastAPI,
+) -> Callable[[], Awaitable[None]]:  # pragma: no cover
+    """
+    Handle HTTPException and generate a JSON response with error details.
+
+    :param app: the fastAPI application.
+    :return: function that actually performs actions.
+    """
+
+    @app.exception_handler(HTTPException)
+    async def _http_exception_handler(
+        request: Request,
+        exc: HTTPException,
+    ) -> JSONResponse:
+        response = {
+            "errors": [
+                {
+                    "code": exc.status_code,
+                    "detail": exc.detail,
+                },
+            ],
+        }
+        return JSONResponse(
+            status_code=exc.status_code,
+            content=response,
+            media_type=MEDIA_TYPE,
+        )
+
+    return _http_exception_handler
 
 
 def register_shutdown_event(

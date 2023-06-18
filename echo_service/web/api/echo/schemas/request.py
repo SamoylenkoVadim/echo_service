@@ -5,11 +5,11 @@ from typing import Dict, Optional
 from pydantic import BaseModel, validator
 
 
-class DataTypes(Enum):
+class DataTypes(str, Enum):
     endpoints = "endpoints"
 
 
-class Methods(Enum):
+class Methods(str, Enum):
     get = "GET"
     post = "POST"
     put = "PUT"
@@ -50,5 +50,5 @@ class Data(BaseModel):
     attributes: Attributes
 
 
-class Request(BaseModel):
+class MessageRequest(BaseModel):
     data: Data

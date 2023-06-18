@@ -9,5 +9,5 @@ class Data(BaseModel):
     attributes: Attributes
 
 
-class Response(BaseModel):
+class MessageResponse(BaseModel):
     data: Data

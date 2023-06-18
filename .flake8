@@ -82,6 +82,12 @@ ignore =
   N805,
   ; Found line with high Jones Complexity: 15 > 14
   WPS221,
+  ; Found subclassing a builtin: str
+  WPS600,
+  ; Found too many local variables: 9 > 5
+  WPS210,
+  ; Found nested function
+  WPS430,
 
 per-file-ignores =
   ; all tests

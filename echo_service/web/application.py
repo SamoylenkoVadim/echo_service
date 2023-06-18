@@ -4,7 +4,11 @@ from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 
 from echo_service.web.api.router import api_router
-from echo_service.web.lifetime import register_shutdown_event, register_startup_event
+from echo_service.web.lifetime import (
+    register_exception_handler,
+    register_shutdown_event,
+    register_startup_event,
+)
 
 
 def get_app() -> FastAPI:
@@ -27,6 +31,7 @@ def get_app() -> FastAPI:
     # Adds startup and shutdown events.
     register_startup_event(app)
     register_shutdown_event(app)
+    register_exception_handler(app)
 
     # Main router for the API.
     app.include_router(router=api_router)
