@@ -20,9 +20,11 @@ async def create_endpoint(
     db: AsyncSession = Depends(get_db_session),
 ) -> JSONResponse:
 
+    # Extract data and attributes from the incoming message
     data = incoming_message.data
     attributes = data.attributes
 
+    # Check if an endpoint with the same verb and path already exists
     existing_endpoint = await db.execute(
         select(Endpoint).where(
             and_(
@@ -32,12 +34,15 @@ async def create_endpoint(
         ),
     )
 
+    # If an endpoint already exists or the path is "/endpoints", raise an exception
     if existing_endpoint.scalar() or attributes.path == "/endpoints":
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="Endpoint with the same verb and path already exists",
         )
 
+    # Create a new Endpoint object and save it into DB, but without commit in order to
+    # have an option to do a rollback
     endpoint = Endpoint(
         verb=attributes.verb.value,
         path=attributes.path,
@@ -48,34 +53,40 @@ async def create_endpoint(
     db.add(endpoint)
     await db.flush()
 
+    # Get an access to the main application and add a dynamic route to it
+    app = shared_app.extract()
+
     async def dynamic_route(req: Request) -> JSONResponse:
         return JSONResponse(
-            content={},
-            status_code=status.HTTP_200_OK,
+            content=endpoint.get_body,
+            headers=endpoint.get_headers,
+            status_code=endpoint.get_code,
         )
 
-    app = shared_app.extract()
     app.add_route(
-        attributes.path,
+        endpoint.get_path,
         dynamic_route,
-        methods=[attributes.verb.value],
-        name=str(endpoint.id),
+        methods=[endpoint.get_verb],
+        name=str(endpoint.get_id),
     )
 
+    # Prepare the response data
     endpoint_data = DataResponse(
-        id=str(endpoint.id),
+        id=str(endpoint.get_id),
         type=DataTypes.endpoints,
         attributes=attributes,
     )
-
     status_code = status.HTTP_201_CREATED
     content = MessageResponse(data=endpoint_data).dict()
     current_url = str(request.base_url)[:-1]
     headers = {LOCATION_HEADER: f"{current_url}{endpoint.path}"}
 
+    # Commit changes to the database
     await db.commit()
     await db.refresh(endpoint)
 
+    # Return the JSON response with appropriate status code,
+    # content, headers, and media type
     return JSONResponse(
         status_code=status_code,
         content=content,
