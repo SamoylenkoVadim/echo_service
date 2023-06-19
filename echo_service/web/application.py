@@ -3,13 +3,13 @@ from importlib import metadata
 from fastapi import FastAPI
 from fastapi.responses import UJSONResponse
 
-from echo_service.web.api.easy_app import create_easy_app
 from echo_service.web.api.router import api_router
 from echo_service.web.lifetime import (
     register_exception_handler,
     register_shutdown_event,
     register_startup_event,
 )
+from echo_service.web.shered_app import shared_app
 
 
 def get_app() -> FastAPI:
@@ -29,13 +29,12 @@ def get_app() -> FastAPI:
         default_response_class=UJSONResponse,
     )
 
-    # Adds startup and shutdown events.
     register_startup_event(app)
     register_shutdown_event(app)
     register_exception_handler(app)
-    create_easy_app(app)
 
-    # Main router for the API.
     app.include_router(router=api_router)
+
+    shared_app.save(app)
 
     return app

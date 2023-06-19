@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from echo_service.constants import LOCATION_HEADER, MEDIA_TYPE
 from echo_service.db.dependencies import get_db_session
 from echo_service.db.models.endpoint import Endpoint
-from echo_service.web.api.easy_app import get_easy_app
 from echo_service.web.api.echo.schemas.request import DataTypes, MessageRequest
 from echo_service.web.api.echo.schemas.response import DataResponse, MessageResponse
+from echo_service.web.shered_app import shared_app
 
 router = APIRouter()
 
@@ -48,14 +48,14 @@ async def create_endpoint(
     db.add(endpoint)
     await db.flush()
 
-    async def dynamic_route(request: Request) -> JSONResponse:
+    async def dynamic_route(req: Request) -> JSONResponse:
         return JSONResponse(
             content={},
             status_code=status.HTTP_200_OK,
         )
 
-    easy_app = get_easy_app()
-    easy_app.add_route(
+    app = shared_app.extract()
+    app.add_route(
         attributes.path,
         dynamic_route,
         methods=[attributes.verb.value],
