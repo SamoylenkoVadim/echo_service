@@ -89,6 +89,11 @@ ignore =
   ; Found nested function
   WPS430,
 
+  ; Found wrong keyword: global
+  WPS420,
+  ; Found outer scope names shadowing: easy_app
+  WPS442,
+
 per-file-ignores =
   ; all tests
   test_*.py,tests.py,tests_*.py,*/tests/*,conftest.py:

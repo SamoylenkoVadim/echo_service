@@ -45,10 +45,10 @@ class Attributes(BaseModel):
         return path
 
 
-class Data(BaseModel):
+class DataRequest(BaseModel):
     type: DataTypes
     attributes: Attributes
 
 
 class MessageRequest(BaseModel):
-    data: Data
+    data: DataRequest
