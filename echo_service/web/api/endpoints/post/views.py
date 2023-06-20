@@ -6,14 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from echo_service.constants import LOCATION_HEADER, MEDIA_TYPE
 from echo_service.db.dependencies import get_db_session
 from echo_service.db.models.endpoint import Endpoint
-from echo_service.web.api.endpoints.post.schemas.request import (
-    DataTypes,
-    MessageRequest,
-)
+from echo_service.web.api.endpoints.post.schemas.request import MessageRequest
 from echo_service.web.api.endpoints.post.schemas.response import (
     DataResponse,
     MessageResponse,
 )
+from echo_service.web.api.endpoints.schemas.base import DataTypes
 from echo_service.web.shered_app import shared_app
 from echo_service.web.utils import make_endpoint_name
 
