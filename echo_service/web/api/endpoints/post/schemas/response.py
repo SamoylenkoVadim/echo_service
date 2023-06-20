@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from echo_service.web.api.echo.schemas.request import Attributes, DataTypes
+from echo_service.web.api.endpoints.post.schemas.request import Attributes, DataTypes
 
 
 class DataResponse(BaseModel):

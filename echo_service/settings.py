@@ -40,7 +40,8 @@ class Settings(BaseSettings):
     log_level: LogLevel = LogLevel.INFO
 
     # Variables for the database
-    db_file: Path = TEMP_DIR / "db.sqlite3"
+    # db_file: Path = TEMP_DIR / "db.sqlite3" # noqa
+    db_file: Path = Path(__file__).resolve().parents[1] / "db.sqlite3"
     db_echo: bool = False
 
     @property

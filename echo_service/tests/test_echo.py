@@ -9,7 +9,7 @@ from starlette import status
 @pytest.mark.anyio
 async def test_echo(fastapi_app: FastAPI, client: AsyncClient) -> None:
     """
-    Tests that echo route works.
+    Tests that post route works.
 
     :param fastapi_app: current application.
     :param client: client for the app.
