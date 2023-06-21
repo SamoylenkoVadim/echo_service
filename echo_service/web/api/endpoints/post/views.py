@@ -12,8 +12,8 @@ from echo_service.web.api.endpoints.post.schemas.response import (
     MessageResponse,
 )
 from echo_service.web.api.endpoints.schemas.base import DataTypes
+from echo_service.web.api.endpoints.utils import make_endpoint_name
 from echo_service.web.shered_app import shared_app
-from echo_service.web.utils import make_endpoint_name
 
 router = APIRouter()
 
@@ -58,7 +58,7 @@ async def create_endpoint(
     db.add(endpoint)
     await db.flush()
 
-    # Get an access to the main application and add a dynamic route to it
+    # Get access to the main application and add a dynamic route to it
     app = shared_app.extract()
 
     async def dynamic_route(req: Request) -> JSONResponse:

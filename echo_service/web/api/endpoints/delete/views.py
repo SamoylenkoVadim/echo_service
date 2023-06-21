@@ -4,8 +4,8 @@ from starlette.routing import Route
 
 from echo_service.db.dependencies import get_db_session
 from echo_service.db.models.endpoint import Endpoint
+from echo_service.web.api.endpoints.utils import make_endpoint_name
 from echo_service.web.shered_app import shared_app
-from echo_service.web.utils import make_endpoint_name
 
 router = APIRouter()
 

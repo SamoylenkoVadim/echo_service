@@ -20,6 +20,7 @@ class Endpoint(Base):
 
     @property
     def get_id(self) -> int:
+        # noinspection PyTypeChecker
         return int(self.id)
 
     @property
@@ -40,4 +41,5 @@ class Endpoint(Base):
 
     @property
     def get_code(self) -> int:
+        # noinspection PyTypeChecker
         return int(self.response_code)
