@@ -1,10 +1,12 @@
 import enum
+import logging
 from pathlib import Path
 from tempfile import gettempdir
 
 from pydantic import BaseSettings
 from yarl import URL
 
+logging.basicConfig(level=logging.INFO)
 TEMP_DIR = Path(gettempdir())
 
 

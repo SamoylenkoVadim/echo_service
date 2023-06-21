@@ -1,13 +1,18 @@
+# flake8: noqa: B023
+import logging
 from typing import Awaitable, Callable
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 from echo_service.constants import MEDIA_TYPE
 from echo_service.db.meta import meta
 from echo_service.db.models import load_all_models
+from echo_service.db.models.endpoint import Endpoint
 from echo_service.settings import settings
+from echo_service.web.api.endpoints.utils import make_endpoint_name
 
 
 def _setup_db(app: FastAPI) -> None:  # pragma: no cover
@@ -38,6 +43,37 @@ async def _create_tables() -> None:  # pragma: no cover
     await engine.dispose()
 
 
+async def _activate_routes(app: FastAPI) -> None:
+    """
+    Create routes from the database.
+
+    :param app: FastAPI application instance
+    """
+    async with app.state.db_session_factory() as session:
+        endpoints = await session.execute(select(Endpoint))
+        for endpoint in endpoints.scalars():
+
+            async def dynamic_route(req: Request) -> JSONResponse:
+                return JSONResponse(
+                    content=endpoint.get_body,
+                    headers=endpoint.get_headers,
+                    status_code=endpoint.get_code,
+                )
+
+            app.add_route(
+                endpoint.get_path,
+                dynamic_route,
+                methods=[endpoint.get_verb],
+                name=make_endpoint_name(endpoint.get_id),
+            )
+            logging.info(
+                f"Added dynamic route for endpoint. "
+                f"id:{endpoint.get_id}; "
+                f"path:{endpoint.get_path}; "
+                f"verb:{endpoint.get_verb}; ",
+            )
+
+
 def register_startup_event(
     app: FastAPI,
 ) -> Callable[[], Awaitable[None]]:  # pragma: no cover
@@ -55,6 +91,7 @@ def register_startup_event(
     async def _startup() -> None:  # noqa: WPS430
         _setup_db(app)
         await _create_tables()
+        await _activate_routes(app)
         pass  # noqa: WPS420
 
     return _startup
