@@ -2,6 +2,7 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
+from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import Response
 from starlette.routing import Route
@@ -32,10 +33,10 @@ async def edit_endpoint(  # noqa: C901, WPS231
             detail=f"Endpoint with ID '{endpoint_id}' not found",
         )
 
-    # Update the endpoint attributes with the provided values
     data = incoming_message.data
     attributes = data.attributes
 
+    # Update the endpoint attributes with the provided values
     if attributes.verb:
         endpoint.verb = attributes.verb.value  # type: ignore
     if attributes.path:
@@ -48,6 +49,23 @@ async def edit_endpoint(  # noqa: C901, WPS231
         endpoint.response_body = attributes.response.body  # type: ignore
 
     await db.flush()
+
+    # Check if an endpoint with the same verb and path already exists
+    existing_endpoint = await db.execute(
+        select(Endpoint).where(
+            and_(
+                Endpoint.verb == endpoint.verb,
+                Endpoint.path == endpoint.path,
+            ),
+        ),
+    )
+
+    # If an endpoint already exists or the path is "/endpoints", raise an exception
+    if existing_endpoint.scalar() or attributes.path == "/endpoints":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Endpoint with the same verb and path already exists",
+        )
 
     # Update the route in the app's routes
     app = shared_app.extract()
