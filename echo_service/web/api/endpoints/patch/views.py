@@ -19,7 +19,7 @@ router = APIRouter()
 
 
 @router.patch("/endpoints/{endpoint_id}", response_model=MessageResponse)
-async def edit_endpoint(  # noqa: C901, WPS231
+async def edit_endpoint(  # noqa: C901, WPS231, WPS217
     endpoint_id: int,
     request: Request,
     incoming_message: MessageRequest,
@@ -36,6 +36,29 @@ async def edit_endpoint(  # noqa: C901, WPS231
     data = incoming_message.data
     attributes = data.attributes
 
+    # Check if an endpoint with the same verb and path already exists
+    query = select(Endpoint)
+
+    # Build the WHERE clause depending on the given attributes
+    conditions = []
+    if attributes.verb and attributes.verb.value:
+        conditions.append(Endpoint.verb == attributes.verb.value)
+    if attributes.path:
+        conditions.append(Endpoint.path == attributes.path)
+
+    # Apply the conditions to the query
+    if conditions:
+        query = query.where(and_(*conditions))
+
+    existing_endpoint = await db.execute(query)
+
+    # If an endpoint already exists or the path is "/endpoints", raise an exception
+    if existing_endpoint.scalar() or attributes.path == "/endpoints":
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="Endpoint with the same verb and path already exists",
+        )
+
     # Update the endpoint attributes with the provided values
     if attributes.verb:
         endpoint.verb = attributes.verb.value  # type: ignore
@@ -49,23 +72,7 @@ async def edit_endpoint(  # noqa: C901, WPS231
         endpoint.response_body = attributes.response.body  # type: ignore
 
     await db.flush()
-
-    # Check if an endpoint with the same verb and path already exists
-    existing_endpoint = await db.execute(
-        select(Endpoint).where(
-            and_(
-                Endpoint.verb == endpoint.verb,
-                Endpoint.path == endpoint.path,
-            ),
-        ),
-    )
-
-    # If an endpoint already exists or the path is "/endpoints", raise an exception
-    if existing_endpoint.scalar() or attributes.path == "/endpoints":
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Endpoint with the same verb and path already exists",
-        )
+    await db.refresh(endpoint)
 
     # Update the route in the app's routes
     app = shared_app.extract()
