@@ -2,6 +2,14 @@
 
 This project was generated using fastapi_template.
 
+## Access to the service
+The service is available on AWS cloud by the link:
+```commandline
+http://13.48.42.153:8000/api/docs
+```
+Feel free to try Endpoints
+
+
 ## Poetry
 
 This project uses poetry. It's a modern dependency management
