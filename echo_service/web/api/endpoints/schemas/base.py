@@ -21,7 +21,7 @@ class Methods(str, Enum):
     delete = "DELETE"
 
 
-class Response(BaseModel):
+class EndpointResponse(BaseModel):
     code: int
     headers: Optional[Dict[str, str]]
     body: Optional[str]
@@ -32,7 +32,7 @@ class Response(BaseModel):
 class Attributes(BaseModel):
     verb: Methods
     path: str
-    response: Response
+    response: EndpointResponse
 
     _validate_path = validator("path", allow_reuse=True)(validate_path)
 
@@ -46,3 +46,11 @@ class DataResponse(BaseModel):
     id: str
     type: DataTypes
     attributes: Attributes
+
+
+class MessageRequest(BaseModel):
+    data: DataRequest
+
+
+class MessageResponse(BaseModel):
+    data: DataResponse

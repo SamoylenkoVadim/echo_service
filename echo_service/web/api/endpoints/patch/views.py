@@ -11,7 +11,7 @@ from echo_service.constants import MEDIA_TYPE
 from echo_service.db.dependencies import get_db_session
 from echo_service.db.models.endpoint import Endpoint
 from echo_service.web.api.endpoints.patch.schemas.request import MessageRequest
-from echo_service.web.api.endpoints.patch.schemas.response import MessageResponse
+from echo_service.web.api.endpoints.schemas.base import MessageResponse
 from echo_service.web.api.endpoints.utils import build_endpoint_data, make_endpoint_name
 from echo_service.web.shered_app import shared_app
 

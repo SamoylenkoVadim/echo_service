@@ -5,13 +5,13 @@ from echo_service.web.api.endpoints.schemas.base import (
     Attributes,
     DataResponse,
     DataTypes,
-    Response,
+    EndpointResponse,
 )
 
 
 def build_endpoint_data(endpoint: Endpoint) -> DataResponse:
 
-    ep_response = Response(
+    ep_response = EndpointResponse(
         code=endpoint.get_code,
         headers=endpoint.get_headers,
         body=endpoint.get_body,

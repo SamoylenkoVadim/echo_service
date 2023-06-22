@@ -5,5 +5,5 @@ from pydantic import BaseModel
 from echo_service.web.api.endpoints.schemas.base import DataResponse
 
 
-class MessageResponse(BaseModel):
+class MessageResponseAllEndpoints(BaseModel):
     data: List[DataResponse]

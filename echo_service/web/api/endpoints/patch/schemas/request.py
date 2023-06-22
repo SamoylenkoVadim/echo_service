@@ -9,7 +9,7 @@ from echo_service.web.api.endpoints.schemas.validators import (
 )
 
 
-class Response(BaseModel):
+class EndpointResponse(BaseModel):
     code: Optional[int]
     headers: Optional[Dict[str, str]]
     body: Optional[str]
@@ -20,7 +20,7 @@ class Response(BaseModel):
 class Attributes(BaseModel):
     verb: Optional[Methods]
     path: Optional[str]
-    response: Optional[Response]
+    response: Optional[EndpointResponse]
 
     _validate_path = validator("path", allow_reuse=True)(validate_path)
 
