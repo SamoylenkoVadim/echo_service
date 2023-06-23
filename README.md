@@ -2,16 +2,22 @@
 
 The purpose of Echo is to serve ephemeral/mock endpoints created with parameters specified by clients.
 
-This project was generated using [fastapi_template](https://github.com/s3rius/FastAPI-template)
-## Access to the endpoints
+### Full documentation:
+Open MkDocs generated documentation in order to know
+- Purpose of the service
+- Definition of endpoints
+- How to install the service <br/>
+
+[Link to the documentation](http://13.48.42.153:8001)
+
+### Access to the endpoints
 The service is available on AWS cloud by the link: [http://13.48.42.153:8000/api/docs](http://13.48.42.153:8000/api/docs)
 
 Feel free to try endpoints.
 
-## Full documentation:
-[http://13.48.42.153:8001](http://13.48.42.153:8001)
 
-## Project structure
+
+### Project structure
 
 ```bash
 $ tree "echo_service"
@@ -31,3 +37,5 @@ echo_service
     ├── application.py  # FastAPI application configuration.
     └── lifetime.py  # Contains actions to perform on startup and shutdown.
 ```
+
+This project was generated using [fastapi_template](https://github.com/s3rius/FastAPI-template)
