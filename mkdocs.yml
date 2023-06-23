@@ -1,0 +1,6 @@
+site_name: EchoService
+nav:
+- Home: index.md
+- Description: description.md
+- Endpoints: endpoints.md
+- Installation: installation.md

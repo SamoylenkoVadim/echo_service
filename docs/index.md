@@ -1,15 +1,11 @@
-# echo_service
-
+#  Documentation
 The purpose of Echo is to serve ephemeral/mock endpoints created with parameters specified by clients.
 
 This project was generated using [fastapi_template](https://github.com/s3rius/FastAPI-template)
-## Access to the endpoints
+## Access to the service
 The service is available on AWS cloud by the link: [http://13.48.42.153:8000/api/docs](http://13.48.42.153:8000/api/docs)
 
 Feel free to try endpoints.
-
-## Full documentation:
-[http://13.48.42.153:8000](http://13.48.42.153:8000)
 
 ## Project structure
 
