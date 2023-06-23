@@ -9,7 +9,7 @@ The service is available on AWS cloud by the link: [http://13.48.42.153:8000/api
 Feel free to try endpoints.
 
 ## Full documentation:
-[http://13.48.42.153:8000](http://13.48.42.153:8000)
+[http://13.48.42.153:8001](http://13.48.42.153:8001)
 
 ## Project structure
 
